@@ -1,4 +1,4 @@
-import { UserEntity } from "./interfaces/user.entity";
+import { UserEntity } from "./entities/user.entity";
 import { CreateUserDTO } from "./dtos/createUser.dto";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
