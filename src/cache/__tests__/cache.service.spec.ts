@@ -37,7 +37,7 @@ describe("CacheService", () => {
   });
 
   it("should return data in function", async () => {
-    const result = { test: "tes" };
+    const result = { test: "test" };
     jest.spyOn(cacheManager, "get").mockResolvedValue(undefined);
 
     const user = await service.getCache("key", () => Promise.resolve(result));
