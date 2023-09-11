@@ -3,12 +3,16 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { Repository } from "typeorm";
 import { ProductEntity } from "./entities/product.entity";
+import { CreateProductDTO } from "./dtos/create-product.dto";
+import { CategoryService } from "../category/category.service";
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
+
+    private readonly categoryService: CategoryService,
   ) {}
 
   async findAll(): Promise<ProductEntity[]> {
@@ -19,5 +23,18 @@ export class ProductService {
     }
 
     return products;
+  }
+
+  async createProduct(createProduct: CreateProductDTO): Promise<ProductEntity> {
+    await this.categoryService.findCategoryById(createProduct.categoryId);
+
+    return this.productRepository.save({
+      ...createProduct,
+      weight: createProduct.weight || 0,
+      width: createProduct.width || 0,
+      length: createProduct.length || 0,
+      diameter: createProduct.diameter || 0,
+      height: createProduct.height || 0,
+    });
   }
 }
