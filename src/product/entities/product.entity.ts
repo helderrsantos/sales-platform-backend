@@ -1,12 +1,10 @@
 import { CategoryEntity } from "../../category/entities/category.entity";
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from "typeorm";
 
 @Entity({ name: "product" })
@@ -25,27 +23,6 @@ export class ProductEntity {
 
   @Column({ name: "image", nullable: false })
   image: string;
-
-  @Column({ name: "weight", nullable: false })
-  weight: number;
-
-  @Column({ name: "length", nullable: false })
-  length: number;
-
-  @Column({ name: "height", nullable: false })
-  height: number;
-
-  @Column({ name: "width", nullable: false })
-  width: number;
-
-  @Column({ name: "diameter", nullable: false })
-  diameter: number;
-
-  @CreateDateColumn({ name: "created_at" })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: "updated_at" })
-  updatedAt: Date;
 
   @ManyToOne(
     () => CategoryEntity,
