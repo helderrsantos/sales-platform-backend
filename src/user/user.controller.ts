@@ -12,8 +12,8 @@ import {
 } from "@nestjs/common";
 import { UserEntity } from "./entities/user.entity";
 import { ReturnUserDto } from "./dtos/returnUser.dto";
-import { Roles } from "src/decorators/roles.decorator";
-import { UserId } from "src/decorators/user-id.decorator";
+import { Roles } from "../decorators/roles.decorator";
+import { UserId } from "../decorators/user-id.decorator";
 import { UpdatePasswordDTO } from "./dtos/update-password.dto";
 import { UserType } from "./enum/user-type.enum";
 
