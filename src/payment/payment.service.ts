@@ -6,7 +6,11 @@ import { ProductEntity } from "../product/entities/product.entity";
 import { Repository } from "typeorm";
 
 import { PaymentEntity } from "./entities/payment.entity";
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { CreateOrderDTO } from "src/order/dtos/create-order.dto";
+import { PaymentCreditCardEntity } from "./entities/payment-credit-card.entity";
+import { PaymentType } from "src/payment-status/enums/payment-type.enum";
+import { PaymentPixEntity } from "./entities/payment-pix.entity";
 
 @Injectable()
 export class PaymentService {
@@ -34,6 +38,37 @@ export class PaymentService {
         })
         .reduce((accumulator, currentValue) => accumulator + currentValue, 0)
         .toFixed(2),
+    );
+  }
+  async createPayment(
+    createOrderDTO: CreateOrderDTO,
+    products: ProductEntity[],
+    cart: CartEntity,
+  ): Promise<PaymentEntity> {
+    const finalPrice = this.generateFinalPrice(cart, products);
+
+    if (createOrderDTO.amountPayments) {
+      const paymentCreditCard = new PaymentCreditCardEntity(
+        PaymentType.Done,
+        finalPrice,
+        0,
+        finalPrice,
+        createOrderDTO,
+      );
+      return this.paymentRepository.save(paymentCreditCard);
+    } else if (createOrderDTO.codePix && createOrderDTO.datePayment) {
+      const paymentPix = new PaymentPixEntity(
+        PaymentType.Done,
+        finalPrice,
+        0,
+        finalPrice,
+        createOrderDTO,
+      );
+      return this.paymentRepository.save(paymentPix);
+    }
+
+    throw new BadRequestException(
+      "Amount Payments or code pix or date payment not found",
     );
   }
 }
