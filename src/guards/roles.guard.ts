@@ -1,9 +1,9 @@
-import { JwtService } from "@nestjs/jwt";
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
+import { JwtService } from "@nestjs/jwt";
+import { LoginPayload } from "../auth/dtos/loginPayload.dto";
 import { ROLES_KEY } from "../decorators/roles.decorator";
 import { UserType } from "../user/enum/user-type.enum";
-import { LoginPayload } from "../auth/dtos/loginPayload.dto";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,9 +17,11 @@ export class RolesGuard implements CanActivate {
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
+
     if (!requiredRoles) {
       return true;
     }
+
     const { authorization } = context.switchToHttp().getRequest().headers;
 
     const loginPayload: LoginPayload | undefined = await this.jwtService
@@ -27,6 +29,7 @@ export class RolesGuard implements CanActivate {
         secret: process.env.JWT_SECRET,
       })
       .catch(() => undefined);
+
     if (!loginPayload) {
       return false;
     }

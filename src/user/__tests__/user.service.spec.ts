@@ -1,14 +1,15 @@
-import { createUserMock } from "./../__mocks__/createUser.mock";
-import { userEntityMock } from "./../__mocks__/user.mock";
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserService } from "../user.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserEntity } from "../entities/user.entity";
-import { getRepositoryToken } from "@nestjs/typeorm";
+import { UserType } from "../enum/user-type.enum";
+import { UserService } from "../user.service";
+import { createUserMock } from "../__mocks__/createUser.mock";
 import {
-  updatePasswordMock,
   updatePasswordInvalidMock,
-} from "../__mocks__/update-password.mock";
+  updatePasswordMock,
+} from "../__mocks__/update-user.mock";
+import { userEntityMock } from "../__mocks__/user.mock";
 
 describe("UserService", () => {
   let service: UserService;
@@ -91,12 +92,23 @@ describe("UserService", () => {
     expect(service.createUser(createUserMock)).rejects.toThrowError();
   });
 
-  it("should return error if user exist", async () => {
+  it("should return user if user not exist", async () => {
+    const spy = jest.spyOn(userRepository, "save");
     jest.spyOn(userRepository, "findOne").mockResolvedValue(undefined);
 
     const user = await service.createUser(createUserMock);
 
     expect(user).toEqual(userEntityMock);
+    expect(spy.mock.calls[0][0].typeUser).toEqual(UserType.User);
+  });
+
+  it("should return user if user not exist and user Admin", async () => {
+    const spy = jest.spyOn(userRepository, "save");
+    jest.spyOn(userRepository, "findOne").mockResolvedValue(undefined);
+
+    await service.createUser(createUserMock, UserType.Admin);
+
+    expect(spy.mock.calls[0][0].typeUser).toEqual(UserType.Admin);
   });
 
   it("should return user in update password", async () => {
