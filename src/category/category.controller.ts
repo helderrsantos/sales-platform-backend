@@ -18,7 +18,7 @@ import { ReturnCategory } from "./dtos/return-category.dto";
 import { UpdateCategory } from "./dtos/update-category.dto";
 import { CategoryEntity } from "./entities/category.entity";
 
-@Roles(UserType.Admin, UserType.User)
+@Roles(UserType.Admin, UserType.Root, UserType.User)
 @Controller("category")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
@@ -28,7 +28,7 @@ export class CategoryController {
     return this.categoryService.findAllCategories();
   }
 
-  @Roles(UserType.Admin)
+  @Roles(UserType.Admin, UserType.Root)
   @UsePipes(ValidationPipe)
   @Post()
   async createCategory(
@@ -37,7 +37,7 @@ export class CategoryController {
     return this.categoryService.createCategory(createCategory);
   }
 
-  @Roles(UserType.Admin)
+  @Roles(UserType.Admin, UserType.Root)
   @Delete(":categoryId")
   async deleteCategory(
     @Param("categoryId") categoryId: number,
@@ -45,7 +45,7 @@ export class CategoryController {
     return this.categoryService.deleteCategory(categoryId);
   }
 
-  @Roles(UserType.Admin)
+  @Roles(UserType.Admin, UserType.Root)
   @UsePipes(ValidationPipe)
   @Put(":categoryId")
   async editCategory(
